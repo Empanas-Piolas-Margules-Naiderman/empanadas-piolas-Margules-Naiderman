@@ -1,11 +1,11 @@
 type Props = {
+  styles: string;
   image?: string;
-  styles?: string;
   text?: string;
   openFunction: () => void;
 };
 
-function reusableButton(props: Props) {
+function ReusableButton(props: Props) {
   const { image, styles, text, openFunction } = props;
 
   return (
@@ -16,4 +16,4 @@ function reusableButton(props: Props) {
   );
 }
 
-export default reusableButton;
+export default ReusableButton;
