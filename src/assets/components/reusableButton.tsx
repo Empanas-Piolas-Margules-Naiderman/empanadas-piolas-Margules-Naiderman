@@ -1,15 +1,14 @@
-type Props = {
-  styles: string;
+type Props = React.ButtonHTMLAttributes<HTMLButtonElement> & {
   image?: string;
   text?: string;
   openFunction: () => void;
 };
 
 function ReusableButton(props: Props) {
-  const { image, styles, text, openFunction } = props;
+  const { image, className = "", text, openFunction } = props;
 
   return (
-    <button onClick={openFunction} className={`${styles}`}>
+    <button onClick={openFunction} className={className} >
       <img src={image} />
       {text}
     </button>

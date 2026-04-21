@@ -1,11 +1,10 @@
-type props = {
-  styles: string;
+type props = React.InputHTMLAttributes<HTMLButtonElement> & {
   placeHolder?: string;
 };
 
 function ReusableInput(props: props) {
-  const { styles, placeHolder } = props;
-  return <input className={`${styles}`} placeholder={placeHolder}></input>;
+  const { className, placeHolder } = props;
+  return <input className={className} placeholder={placeHolder}></input>;
 }
 
 export default ReusableInput;
