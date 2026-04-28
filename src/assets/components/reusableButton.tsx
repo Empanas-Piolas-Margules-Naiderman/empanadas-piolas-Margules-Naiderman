@@ -5,10 +5,10 @@ type Props = React.ButtonHTMLAttributes<HTMLButtonElement> & {
 };
 
 function ReusableButton(props: Props) {
-  const { image, className = "", text, openFunction } = props;
+  const { image, text, openFunction } = props;
 
   return (
-    <button onClick={openFunction} className={className} >
+    <button onClick={openFunction} className="bg-gradient-to-r from-orange-600 to-red-500 rounded-lg">
       <img src={image} />
       {text}
     </button>
