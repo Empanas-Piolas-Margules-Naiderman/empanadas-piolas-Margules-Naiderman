@@ -45,14 +45,24 @@ const App = () => {
 
       </nav>
 
-      {/* SIDEBAR */}
+      {/* SIDEBAR */}  
       {open && (
         <div className="fixed top-0 left-0 h-full w-64 bg-white shadow-lg p-6 z-50">
-          <p className="mb-4 font-bold">MENÚ</p>
+
+          {/* BOTÓN CERRAR */}
+          <button
+            onClick={() => setOpen(false)}
+            className="absolute top-4 right-4 text-xl"
+          >
+            ✕
+          </button>
+
+          <p className="mb-4 font-bold">INDICE</p>
           <p className="mb-2 cursor-pointer" onClick={scrollToMenu}>Pedir</p>
           <p className="mb-2 cursor-pointer">Locales</p>
           <p className="mb-2 cursor-pointer">Nosotros</p>
         </div>
+
       )}
 
       {/* HERO */}
@@ -74,17 +84,17 @@ const App = () => {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
 
           <div onClick={() => agregar("Carne")} className="bg-white shadow p-4 rounded cursor-pointer">
-            <img src="/carne.jpg" className="rounded mb-2" />
+            <img src="/empanadasDeCarne.avif" className="rounded mb-2" />
             <h3 className="font-bold">Carne</h3>
           </div>
 
           <div onClick={() => agregar("Pollo")} className="bg-white shadow p-4 rounded cursor-pointer">
-            <img src="/pollo.jpg" className="rounded mb-2" />
+            <img src="/empanadasDePollo.webp" className="rounded mb-2" />
             <h3 className="font-bold">Pollo</h3>
           </div>
 
           <div onClick={() => agregar("Jamón y queso")} className="bg-white shadow p-4 rounded cursor-pointer">
-            <img src="/jamon.jpg" className="rounded mb-2" />
+            <img src="/empanadasDeJYQ.webp" className="rounded mb-2" />
             <h3 className="font-bold">Jamón y queso</h3>
           </div>
 
