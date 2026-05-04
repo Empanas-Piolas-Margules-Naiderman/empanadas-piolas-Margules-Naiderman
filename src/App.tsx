@@ -33,7 +33,7 @@ const App = () => {
           <div className="font-sans">
 
             {/* NAVBAR */}
-            <nav className="flex justify-between items-center p-6 bg-orange-500 text-white relative">
+            <nav className="fixed top-0 left-0 w-full z-50 flex justify-between items-center p-6 bg-orange-500 text-white">
 
               <button onClick={() => setOpen(!open)} className="text-2xl">
                 ☰
@@ -68,6 +68,29 @@ const App = () => {
                 <p className="mb-2 cursor-pointer">Nosotros</p>
               </div>
             )}
+
+
+            {/* NOSOTROS */}
+            <section className="p-10 bg-gray-100 flex flex-col md:flex-row gap-10 items-center">
+              <img src="/flia.webp" className="w-full md:w-1/2 rounded" />
+
+              <div>
+                <h2 className="text-3xl font-bold mb-4">Quiénes somos</h2>
+                <p>
+                  Somos un emprendimiento familiar que hace empanadas caseras
+                  con ingredientes de calidad.
+                </p>
+              </div>
+            </section>
+
+            {/* MAPA */}
+            <section className="p-10 text-center">
+              <h2 className="text-3xl font-bold mb-4">Dónde estamos</h2>
+
+              <div className="w-full h-64 bg-gray-300 flex items-center justify-center">
+                <p>MAPA</p>
+              </div>
+            </section>
 
             {/* MENÚ */}
             <section id="menu" className="p-10 text-center">
@@ -125,27 +148,7 @@ const App = () => {
               </div>
             </section>
 
-            {/* NOSOTROS */}
-            <section className="p-10 bg-gray-100 flex flex-col md:flex-row gap-10 items-center">
-              <img src="/flia.webp" className="w-full md:w-1/2 rounded" />
 
-              <div>
-                <h2 className="text-3xl font-bold mb-4">Quiénes somos</h2>
-                <p>
-                  Somos un emprendimiento familiar que hace empanadas caseras
-                  con ingredientes de calidad.
-                </p>
-              </div>
-            </section>
-
-            {/* MAPA */}
-            <section className="p-10 text-center">
-              <h2 className="text-3xl font-bold mb-4">Dónde estamos</h2>
-
-              <div className="w-full h-64 bg-gray-300 flex items-center justify-center">
-                <p>MAPA</p>
-              </div>
-            </section>
 
           </div>
         } />
