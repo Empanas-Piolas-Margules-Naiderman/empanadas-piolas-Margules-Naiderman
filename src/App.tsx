@@ -8,7 +8,7 @@ import { useState } from "react";
 const App = () => {
 
   const [open, setOpen] = useState(false);
-  const [pedido, setPedido] = useState<string[]>([]);
+  const [pedido, setPedido] = useState<{ nombre: string; cantidad: number }[]>([]);
 
   function Botonear(): void {
     console.log("Click");
@@ -19,8 +19,30 @@ const App = () => {
     section?.scrollIntoView({ behavior: "smooth" });
   };
 
-  function agregar(empanada: string) {
-    setPedido([...pedido, empanada]);
+  // ➕ agregar
+  function agregar(nombre: string) {
+    const existe = pedido.find((p) => p.nombre === nombre);
+
+    if (existe) {
+      setPedido(
+        pedido.map((p) =>
+          p.nombre === nombre ? { ...p, cantidad: p.cantidad + 1 } : p
+        )
+      );
+    } else {
+      setPedido([...pedido, { nombre, cantidad: 1 }]);
+    }
+  }
+
+  // ➖ restar
+  function restar(nombre: string) {
+    setPedido(
+      pedido
+        .map((p) =>
+          p.nombre === nombre ? { ...p, cantidad: p.cantidad - 1 } : p
+        )
+        .filter((p) => p.cantidad > 0)
+    );
   }
 
   return (
@@ -30,7 +52,7 @@ const App = () => {
 
         {/* HOME */}
         <Route path="/" element={
-          <div className="font-sans">
+          <div className="font-sans pt-24">
 
             {/* NAVBAR */}
             <nav className="fixed top-0 left-0 w-full z-50 flex justify-between items-center p-6 bg-orange-500 text-white">
@@ -69,7 +91,7 @@ const App = () => {
               </div>
             )}
 
-
+            
             {/* NOSOTROS */}
             <section className="p-10 bg-gray-100 flex flex-col md:flex-row gap-10 items-center">
               <img src="/flia.webp" className="w-full md:w-1/2 rounded" />
@@ -96,38 +118,86 @@ const App = () => {
             <section id="menu" className="p-10 text-center">
               <h2 className="text-3xl font-bold mb-6">Nuestro menú</h2>
 
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              <div className="flex flex-wrap justify-center gap-6">
 
-                <div onClick={() => agregar("Carne")} className="bg-white shadow p-4 rounded cursor-pointer">
-                  <img src="/empanadasDeCarne.avif" className="rounded mb-2" />
+                <div onClick={() => agregar("Carne")} className="bg-white shadow p-4 rounded cursor-pointer w-40">
+                  <img src="/empanadasDeCarne.avif" className="w-full h-32 object-cover rounded mb-2" />
                   <h3 className="font-bold">Carne</h3>
+                  <h3 className="font-bold">$100000</h3>
                 </div>
 
-                <div onClick={() => agregar("Pollo")} className="bg-white shadow p-4 rounded cursor-pointer">
-                  <img src="/empanadasDePollo.webp" className="rounded mb-2" />
+                <div onClick={() => agregar("Pollo")} className="bg-white shadow p-4 rounded cursor-pointer w-40">
+                  <img src="/empanadasDePollo.webp" className="w-full h-32 object-cover rounded mb-2" />
                   <h3 className="font-bold">Pollo</h3>
+                  <h3 className="font-bold">$100000</h3>
                 </div>
 
-                <div onClick={() => agregar("Jamón y queso")} className="bg-white shadow p-4 rounded cursor-pointer">
-                  <img src="/empanadasDeJYQ.webp" className="rounded mb-2" />
+                <div onClick={() => agregar("Jamón y queso")} className="bg-white shadow p-4 rounded cursor-pointer w-40">
+                  <img src="/empanadasDeJYQ.webp" className="w-full h-32 object-cover rounded mb-2" />
                   <h3 className="font-bold">Jamón y queso</h3>
+                  <h3 className="font-bold">$100000</h3>
+                </div>
+
+                <div onClick={() => agregar("Humita")} className="bg-white shadow p-4 rounded cursor-pointer w-40">
+                  <img src="/empanadasHumita.webp" className="w-full h-32 object-cover rounded mb-2" />
+                  <h3 className="font-bold">Humita</h3>
+                  <h3 className="font-bold">$100000</h3>
+                </div>
+
+                <div onClick={() => agregar("4 Quesos")} className="bg-white shadow p-4 rounded cursor-pointer w-40">
+                  <img src="/empanadas4Quesos.webp" className="w-full h-32 object-cover rounded mb-2" />
+                  <h3 className="font-bold">4 Quesos</h3>
+                  <h3 className="font-bold">$100000</h3>
+                </div>
+
+                <div onClick={() => agregar("Caprese")} className="bg-white shadow p-4 rounded cursor-pointer w-40">
+                  <img src="/empanadasCaprece1.webp" className="w-full h-32 object-cover rounded mb-2" />
+                  <h3 className="font-bold">Caprese</h3>
+                  <h3 className="font-bold">$100000</h3>
                 </div>
 
               </div>
             </section>
 
-            {/* PEDIDO */}
-            <section className="p-10 bg-gray-50 text-center">
-              <h2 className="text-2xl font-bold mb-4">Tu pedido</h2>
+            {/* PEDIDO NUEVO */}
+            <section className="p-10 bg-gray-50">
+              <h2 className="text-2xl font-bold mb-6 text-center">Tu pedido</h2>
 
               {pedido.length === 0 ? (
-                <p>No agregaste nada todavía</p>
+                <p className="text-center">No agregaste nada todavía</p>
               ) : (
-                <ul>
+                <div className="max-w-md mx-auto flex flex-col gap-4">
+
                   {pedido.map((item, index) => (
-                    <li key={index}>{item}</li>
+                    <div
+                      key={index}
+                      className="flex justify-between items-center bg-white p-4 rounded shadow"
+                    >
+                      <p className="font-semibold">{item.nombre}</p>
+
+                      <div className="flex items-center gap-3">
+
+                        <button
+                          onClick={() => restar(item.nombre)}
+                          className="bg-gray-200 px-3 py-1 rounded"
+                        >
+                          -
+                        </button>
+
+                        <span>{item.cantidad}</span>
+
+                        <button
+                          onClick={() => agregar(item.nombre)}
+                          className="bg-orange-500 text-white px-3 py-1 rounded"
+                        >
+                          +
+                        </button>
+
+                      </div>
+                    </div>
                   ))}
-                </ul>
+
+                </div>
               )}
             </section>
 
@@ -136,9 +206,15 @@ const App = () => {
               <h2 className="text-3xl font-bold mb-6 text-center">Hacer pedido</h2>
 
               <div className="max-w-md mx-auto flex flex-col gap-4">
-                <ReusableInput placeHolder="¿Qué vas a pedir?" />
-                <ReusableInput placeHolder="¿Cómo pagás?" />
-                <ReusableInput placeHolder="Retiro o delivery?" />
+                
+                <div className= "">
+                  <ReusableButton
+                    text="Mercado Pago"
+                    openFunction={Botonear}
+                    styles="bg-orange-500 text-white p-2 rounded"
+                  />
+                  
+                </div>
 
                 <ReusableButton
                   text="Enviar pedido"
@@ -147,7 +223,6 @@ const App = () => {
                 />
               </div>
             </section>
-
 
 
           </div>
