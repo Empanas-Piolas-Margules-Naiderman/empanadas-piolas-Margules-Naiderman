@@ -1,6 +1,6 @@
-import { defineConfig } from "vite";
-import react from "@vitejs/plugin-react";
-import tailwindcss from "@tailwindcss/vite";
+import { defineConfig } from "vite/dist/node";
+import react from "@vitejs/plugin-react/dist";
+import tailwindcss from "@tailwindcss/vite/dist/index.d.mts";
 
 export default defineConfig({
   plugins: [react(), tailwindcss()],
