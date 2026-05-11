@@ -1,5 +1,5 @@
 type Props = {
-  styles: string;
+  styles?: string;
   image?: string;
   text?: string;
   openFunction: () => void;

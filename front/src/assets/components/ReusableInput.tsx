@@ -1,5 +1,5 @@
 type props = {
-  styles: string;
+  styles?: string;
   placeHolder?: string;
 };
 
