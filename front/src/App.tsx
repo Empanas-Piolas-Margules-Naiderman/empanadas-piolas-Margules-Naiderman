@@ -1,5 +1,5 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import Login from "./pages/login";
+import Login from "./assets/screens/LogIn";
 import ReusableButton from "./assets/components/reusableButton";
 import { useState } from "react";
 
@@ -18,7 +18,7 @@ const App = () => {
     section?.scrollIntoView({ behavior: "smooth" });
   };
 
-  // ➕ agregar
+  // agregar
   function agregar(nombre: string) {
     const existe = pedido.find((p) => p.nombre === nombre);
 
@@ -33,7 +33,7 @@ const App = () => {
     }
   }
 
-  // ➖ restar
+  // restar
   function restar(nombre: string) {
     setPedido(
       pedido
@@ -256,7 +256,6 @@ const App = () => {
           }
         />
 
-        {/* LOGIN */}
         <Route path="/login" element={<Login />} />
       </Routes>
     </BrowserRouter>

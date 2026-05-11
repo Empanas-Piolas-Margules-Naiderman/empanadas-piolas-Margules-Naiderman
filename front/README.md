@@ -1,4 +1,4 @@
-Cosas que hay que instalar: npm i react-router-dom, npm i, npm install tailwindcss @tailwindcss/vite
+Cosas que hay que instalar si estas en compu diferente: npm i react-router-dom, npm i, npm install tailwindcss @tailwindcss/vite
 
 ---
 
