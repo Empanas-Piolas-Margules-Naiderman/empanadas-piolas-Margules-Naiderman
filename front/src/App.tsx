@@ -2,7 +2,6 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Login from "./assets/screens/LogIn";
 import ReusableButton from "./assets/components/reusableButton";
 import { useState } from "react";
-import { supabase } from "../../back/supaBase.js";
 
 const App = () => {
   const [open, setOpen] = useState(false);
