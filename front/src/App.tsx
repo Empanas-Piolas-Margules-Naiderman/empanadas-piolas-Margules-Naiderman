@@ -8,13 +8,15 @@ const App = () => {
   const [pedido, setPedido] = useState<{ nombre: string; cantidad: number }[]>(
     [],
   );
+  const [pago, setPago] = useState("");
+  const [envio, setEnvio] = useState("");
 
   function Botonear(): void {
     console.log("Click");
   }
 
-  const scrollToMenu = (): void => {
-    const section = document.getElementById("menu");
+  const scrollToSection = (id: string): void => {
+    const section = document.getElementById(id);
     section?.scrollIntoView({ behavior: "smooth" });
   };
 
@@ -80,17 +82,19 @@ const App = () => {
                   </button>
 
                   <p className="mb-4 font-bold">INDICE</p>
-                  <p className="mb-2 cursor-pointer" onClick={scrollToMenu}>
+                  <p className="mb-2 cursor-pointer" onClick={() => scrollToSection("nosotros")}>Nosotros</p>
+                  <p className="mb-2 cursor-pointer" onClick={() => scrollToSection("mapa")}>Locales</p>
+                  <p className="mb-2 cursor-pointer" onClick={() => scrollToSection("menu")}>
                     Menú
                   </p>
-                  <p className="mb-2 cursor-pointer">Pedir</p>
-                  <p className="mb-2 cursor-pointer">Locales</p>
-                  <p className="mb-2 cursor-pointer">Nosotros</p>
+                  <p className="mb-2 cursor-pointer" onClick={() => scrollToSection("pedido")}>Pedir</p>
+                  
+                  
                 </div>
               )}
 
               {/* NOSOTROS */}
-              <section className="p-10 bg-gray-100 flex flex-col md:flex-row gap-10 items-center">
+              <section id = "nosotros" className="p-10 bg-gray-100 flex flex-col md:flex-row gap-10 items-center">
                 <img src="/flia.webp" className="w-full md:w-1/2 rounded" />
 
                 <div>
@@ -103,7 +107,7 @@ const App = () => {
               </section>
 
               {/* MAPA */}
-              <section className="p-10 text-center">
+              <section id="mapa" className="p-10 text-center">
                 <h2 className="text-3xl font-bold mb-4">Dónde estamos</h2>
 
                 <div className="w-full h-64 bg-gray-300 flex items-center justify-center">
@@ -191,7 +195,7 @@ const App = () => {
               </section>
 
               {/* PEDIDO NUEVO */}
-              <section className="p-10 bg-gray-50">
+              <section id="pedido" className="p-10 bg-gray-50">
                 <h2 className="text-2xl font-bold mb-6 text-center">
                   Tu pedido
                 </h2>
@@ -236,20 +240,81 @@ const App = () => {
                   Hacer pedido
                 </h2>
 
-                <div className="max-w-md mx-auto flex flex-col gap-4">
-                  <div className="">
-                    <ReusableButton
-                      text="Mercado Pago"
-                      openFunction={Botonear}
-                      styles="bg-orange-500 text-white p-2 rounded"
-                    />
+                <div className="max-w-md mx-auto flex flex-col gap-8">
+
+                  {/* MÉTODO DE PAGO */}
+                  <div>
+                    <p className="font-bold mb-3">Método de pago</p>
+
+                    <div className="flex gap-4">
+
+                      <button
+                        onClick={() => setPago("Efectivo")}
+                        className={`flex-1 p-3 rounded transition ${
+                          pago === "Efectivo"
+                            ? "bg-orange-500 text-white"
+                            : "bg-white border"
+                        }`}
+                      >
+                       Efectivo
+                      </button>
+
+                      <button
+                        onClick={() => setPago("Mercado Pago")}
+                        className={`flex-1 p-3 rounded transition ${
+                          pago === "Mercado Pago"
+                            ? "bg-blue-500 text-white"
+                            : "bg-white border"
+                        }`}
+                      >
+                       Mercado Pago
+                      </button>
+
+                    </div>
                   </div>
 
+                  {/* ENVÍO */}
+                  <div>
+                    <p className="font-bold mb-3">Tipo de entrega</p>
+
+                    <div className="flex gap-4">
+
+                      <button
+                        onClick={() => setEnvio("Retiro")}
+                        className={`flex-1 p-3 rounded transition ${
+                          envio === "Retiro"
+                            ? "bg-green-500 text-white"
+                            : "bg-white border"
+                        }`}
+                      >
+                       Retiro en local
+                      </button>
+
+                      <button
+                        onClick={() => setEnvio("Delivery")}
+                        className={`flex-1 p-3 rounded transition ${
+                          envio === "Delivery"
+                            ? "bg-purple-500 text-white"
+                            : "bg-white border"
+                        }`}
+                      >
+                       Delivery
+                      </button>
+
+                    </div>
+                  </div>
+
+                  {/* BOTÓN FINAL */}
                   <ReusableButton
                     text="Enviar pedido"
-                    openFunction={Botonear}
-                    styles="bg-orange-500 text-white p-2 rounded"
+                    openFunction={() => {
+                      console.log("Pedido:", pedido);
+                      console.log("Pago:", pago);
+                      console.log("Envío:", envio);
+                    }}
+                    styles="bg-orange-500 text-white p-3 rounded"
                   />
+
                 </div>
               </section>
             </div>
