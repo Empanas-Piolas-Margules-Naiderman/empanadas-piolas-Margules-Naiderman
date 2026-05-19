@@ -95,7 +95,7 @@ const App = () => {
 
               {/* NOSOTROS */}
               <section id = "nosotros" className="p-10 bg-gray-100 flex flex-col md:flex-row gap-10 items-center">
-                <img src="/flia.webp" className="w-full md:w-1/2 rounded" />
+                <img src="/flia.jpg" className="w-full md:w-1/2 rounded" />
 
                 <div>
                   <h2 className="text-3xl font-bold mb-4">Quiénes somos</h2>
@@ -125,7 +125,7 @@ const App = () => {
                     className="bg-white shadow p-4 rounded cursor-pointer w-40"
                   >
                     <img
-                      src="/empanadasDeCarne.avif"
+                      src="/empanadasDeCarne.jfif"
                       className="w-full h-32 object-cover rounded mb-2"
                     />
                     <h3 className="font-bold">Carne</h3>
@@ -137,7 +137,7 @@ const App = () => {
                     className="bg-white shadow p-4 rounded cursor-pointer w-40"
                   >
                     <img
-                      src="/empanadasDePollo.webp"
+                      src="/empanadasDePollo.jfif"
                       className="w-full h-32 object-cover rounded mb-2"
                     />
                     <h3 className="font-bold">Pollo</h3>
@@ -149,7 +149,7 @@ const App = () => {
                     className="bg-white shadow p-4 rounded cursor-pointer w-40"
                   >
                     <img
-                      src="/empanadasDeJYQ.webp"
+                      src="/empanadasDeJYQ.jfif"
                       className="w-full h-32 object-cover rounded mb-2"
                     />
                     <h3 className="font-bold">Jamón y queso</h3>
@@ -161,7 +161,7 @@ const App = () => {
                     className="bg-white shadow p-4 rounded cursor-pointer w-40"
                   >
                     <img
-                      src="/empanadasHumita.webp"
+                      src="/empanadasDeHumita.jfif"
                       className="w-full h-32 object-cover rounded mb-2"
                     />
                     <h3 className="font-bold">Humita</h3>
@@ -173,7 +173,7 @@ const App = () => {
                     className="bg-white shadow p-4 rounded cursor-pointer w-40"
                   >
                     <img
-                      src="/empanadas4Quesos.webp"
+                      src="/empanadas4Quesos.jfif"
                       className="w-full h-32 object-cover rounded mb-2"
                     />
                     <h3 className="font-bold">4 Quesos</h3>
@@ -185,7 +185,7 @@ const App = () => {
                     className="bg-white shadow p-4 rounded cursor-pointer w-40"
                   >
                     <img
-                      src="/empanadasCaprece1.webp"
+                      src="/empanadasDeCaprese.jfif"
                       className="w-full h-32 object-cover rounded mb-2"
                     />
                     <h3 className="font-bold">Caprese</h3>
