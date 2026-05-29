@@ -1,32 +1,62 @@
-import { supabase } from "../../supabase";
+import { supabase } from "../../supabase.js";
 
-export async function CreateUser(password, name) {
-  const registered;
-  const { data, error } = await supabase.from("users").insert({
-    name: name,
-    password: password,
-  });
-  if (error) {
-    console.error("Failed to create user");
-    registered = false;
-    return [registered];
-  }
-  console.log("User created");
-  registered = true;
-  return [registered];
-}
-
-export async function LoginUser(password, name) {
-  const isloggedin;
+export async function getUsers() {
   const { data, error } = await supabase
     .from("users")
-    .select("*")
-    .eq("name", name);
-  if (error) {
-    console.error("Account doesn't exist");
-    isloggedin = false;
-    return ["No existe la cuenta", isloggedin];
-  }
-  isloggedin = true;
-  return ["Succesfully logged in", isloggedin];
+    .select("id,nombre,apellido")
+    .order("id", { ascending: true });
+
+  if (error) throw error;
+  return data;
+}
+
+export async function getUserById(id) {
+  const { data, error } = await supabase
+    .from("users")
+    .select("id,nombre,apellido")
+    .eq("id", id)
+    .maybeSingle();
+
+  if (error) throw error;
+  return data;
+}
+
+export async function createUser({ nombre, apellido }) {
+  const { data, error } = await supabase
+    .from("users")
+    .insert({ nombre, apellido })
+    .select("id,nombre,apellido")
+    .single();
+
+  if (error) throw error;
+  return data;
+}
+
+export async function updateUser(id, { nombre, apellido }) {
+  const values = {};
+
+  if (nombre !== undefined) values.nombre = nombre;
+  if (apellido !== undefined) values.apellido = apellido;
+
+  const { data, error } = await supabase
+    .from("users")
+    .update(values)
+    .eq("id", id)
+    .select("id,nombre,apellido")
+    .maybeSingle();
+
+  if (error) throw error;
+  return data;
+}
+
+export async function deleteUser(id) {
+  const { data, error } = await supabase
+    .from("users")
+    .delete()
+    .eq("id", id)
+    .select("id,nombre,apellido")
+    .maybeSingle();
+
+  if (error) throw error;
+  return data;
 }
