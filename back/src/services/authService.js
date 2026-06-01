@@ -3,7 +3,7 @@ import { supabase } from "../../supabase.js";
 export async function getUsers() {
   const { data, error } = await supabase
     .from("users")
-    .select("id,nombre,apellido")
+    .select("id,name")
     .order("id", { ascending: true });
 
   if (error) throw error;
@@ -13,7 +13,7 @@ export async function getUsers() {
 export async function getUserById(id) {
   const { data, error } = await supabase
     .from("users")
-    .select("id,nombre,apellido")
+    .select("id,name")
     .eq("id", id)
     .maybeSingle();
 
@@ -21,28 +21,40 @@ export async function getUserById(id) {
   return data;
 }
 
-export async function createUser({ nombre, apellido }) {
+export async function loginUser({ name, password }) {
   const { data, error } = await supabase
     .from("users")
-    .insert({ nombre, apellido })
-    .select("id,nombre,apellido")
+    .select("id,name")
+    .eq("name", name)
+    .eq("password", password)
+    .maybeSingle();
+
+  if (error) throw error;
+  return data;
+}
+
+export async function createUser({ name, password }) {
+  const { data, error } = await supabase
+    .from("users")
+    .insert({ name, password })
+    .select("id,name")
     .single();
 
   if (error) throw error;
   return data;
 }
 
-export async function updateUser(id, { nombre, apellido }) {
+export async function updateUser(id, { name, password }) {
   const values = {};
 
-  if (nombre !== undefined) values.nombre = nombre;
-  if (apellido !== undefined) values.apellido = apellido;
+  if (name !== undefined) values.name = name;
+  if (password !== undefined) values.password = password;
 
   const { data, error } = await supabase
     .from("users")
     .update(values)
     .eq("id", id)
-    .select("id,nombre,apellido")
+    .select("id,name")
     .maybeSingle();
 
   if (error) throw error;
@@ -54,7 +66,7 @@ export async function deleteUser(id) {
     .from("users")
     .delete()
     .eq("id", id)
-    .select("id,nombre,apellido")
+    .select("id,name")
     .maybeSingle();
 
   if (error) throw error;

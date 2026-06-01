@@ -10,7 +10,7 @@ function ReusableButton(props: Props) {
 
   return (
     <button onClick={openFunction} className={`${styles}`}>
-      <img src={image} />
+      {image && <img src={image} alt="" />}
       {text}
     </button>
   );

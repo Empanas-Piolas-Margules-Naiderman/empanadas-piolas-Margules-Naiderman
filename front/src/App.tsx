@@ -1,26 +1,123 @@
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Link, Route, Routes } from "react-router-dom";
+import { useEffect, useState } from "react";
 import Login from "./assets/screens/LogIn";
 import ReusableButton from "./assets/components/reusableButton";
-import { useState } from "react";
+import {
+  createPedido,
+  getPedidosByUser,
+  type Pedido,
+  type PedidoItem,
+  type User,
+} from "./services/supabaseApi";
+
+const USER_STORAGE_KEY = "empanadasPiolasUser";
+
+const menu = [
+  { nombre: "Carne", precio: 100000, imagen: "/empanadasDeCarne.jfif" },
+  { nombre: "Pollo", precio: 100000, imagen: "/empanadasDePollo.jfif" },
+  { nombre: "Jamon y queso", precio: 100000, imagen: "/empanadasDeJYQ.jfif" },
+  { nombre: "Humita", precio: 100000, imagen: "/empanadasDeHumita.jfif" },
+  { nombre: "4 Quesos", precio: 100000, imagen: "/empanadas4Quesos.jfif" },
+  { nombre: "Caprese", precio: 100000, imagen: "/empanadasDeCaprese.jfif" },
+];
+
+function getStoredUser() {
+  const storedUser = localStorage.getItem(USER_STORAGE_KEY);
+
+  if (!storedUser) return null;
+
+  try {
+    const parsedUser = JSON.parse(storedUser) as User & { nombre?: string };
+
+    if (!parsedUser.name && parsedUser.nombre) {
+      return { id: parsedUser.id, name: parsedUser.nombre };
+    }
+
+    return parsedUser;
+  } catch {
+    localStorage.removeItem(USER_STORAGE_KEY);
+    return null;
+  }
+}
+
+function getPedidoItems(pedido: Pedido): PedidoItem[] {
+  if (Array.isArray(pedido.empanadas)) {
+    return pedido.empanadas;
+  }
+
+  return pedido.empanadas.items ?? [];
+}
+
+function getPedidoInfo(pedido: Pedido) {
+  if (Array.isArray(pedido.empanadas)) {
+    return { pago: "", envio: "", createdAt: "" };
+  }
+
+  return pedido.empanadas;
+}
+
+function formatDate(value?: string) {
+  if (!value) return "Sin fecha";
+
+  return new Intl.DateTimeFormat("es-AR", {
+    dateStyle: "short",
+    timeStyle: "short",
+  }).format(new Date(value));
+}
 
 const App = () => {
   const [open, setOpen] = useState(false);
-  const [pedido, setPedido] = useState<{ nombre: string; cantidad: number }[]>(
-    [],
-  );
+  const [pedido, setPedido] = useState<PedidoItem[]>([]);
+  const [historial, setHistorial] = useState<Pedido[]>([]);
+  const [currentUser, setCurrentUser] = useState<User | null>(() => getStoredUser());
   const [pago, setPago] = useState("");
   const [envio, setEnvio] = useState("");
+  const [mensaje, setMensaje] = useState("");
+  const [isSavingPedido, setIsSavingPedido] = useState(false);
 
-  function Botonear(): void {
-    console.log("Click");
+  useEffect(() => {
+    if (!currentUser) {
+      setHistorial([]);
+      return;
+    }
+
+    const userId = currentUser.id;
+
+    async function cargarHistorial() {
+      try {
+        const pedidos = await getPedidosByUser(userId);
+        setHistorial(pedidos);
+      } catch (error) {
+        setMensaje(
+          error instanceof Error ? error.message : "No se pudo cargar el historial",
+        );
+      }
+    }
+
+    void cargarHistorial();
+  }, [currentUser]);
+
+  function handleLogin(user: User) {
+    localStorage.setItem(USER_STORAGE_KEY, JSON.stringify(user));
+    setCurrentUser(user);
+    setMensaje("");
+  }
+
+  function cerrarSesion() {
+    localStorage.removeItem(USER_STORAGE_KEY);
+    setCurrentUser(null);
+    setPedido([]);
+    setPago("");
+    setEnvio("");
+    setMensaje("Sesion cerrada");
   }
 
   const scrollToSection = (id: string): void => {
     const section = document.getElementById(id);
     section?.scrollIntoView({ behavior: "smooth" });
+    setOpen(false);
   };
 
-  // agregar
   function agregar(nombre: string) {
     const existe = pedido.find((p) => p.nombre === nombre);
 
@@ -30,12 +127,12 @@ const App = () => {
           p.nombre === nombre ? { ...p, cantidad: p.cantidad + 1 } : p,
         ),
       );
-    } else {
-      setPedido([...pedido, { nombre, cantidad: 1 }]);
+      return;
     }
+
+    setPedido([...pedido, { nombre, cantidad: 1 }]);
   }
 
-  // restar
   function restar(nombre: string) {
     setPedido(
       pedido
@@ -46,59 +143,141 @@ const App = () => {
     );
   }
 
+  async function enviarPedido() {
+    if (!currentUser) {
+      setMensaje("Tenes que iniciar sesion para guardar un pedido");
+      return;
+    }
+
+    if (pedido.length === 0) {
+      setMensaje("Agrega al menos una empanada al pedido");
+      return;
+    }
+
+    if (!pago || !envio) {
+      setMensaje("Elegi metodo de pago y tipo de entrega");
+      return;
+    }
+
+    try {
+      setIsSavingPedido(true);
+      setMensaje("");
+
+      const savedPedido = await createPedido(currentUser.id, {
+        items: pedido,
+        pago,
+        envio,
+        createdAt: new Date().toISOString(),
+      });
+
+      setHistorial((prevHistorial) => [savedPedido, ...prevHistorial]);
+      setPedido([]);
+      setPago("");
+      setEnvio("");
+      setMensaje("Pedido guardado correctamente");
+      scrollToSection("historial");
+    } catch (error) {
+      setMensaje(error instanceof Error ? error.message : "No se pudo guardar el pedido");
+    } finally {
+      setIsSavingPedido(false);
+    }
+  }
+
   return (
     <BrowserRouter>
       <Routes>
-        {/* HOME */}
         <Route
           path="/"
           element={
             <div className="font-sans pt-24">
-              {/* NAVBAR */}
-              <nav className="fixed top-0 left-0 w-full z-50 flex justify-between items-center p-6 bg-orange-500 text-white">
-                <button onClick={() => setOpen(!open)} className="text-2xl">
+              <nav className="fixed top-0 left-0 w-full z-50 flex justify-between items-center gap-4 p-6 bg-orange-500 text-white">
+                <button
+                  type="button"
+                  onClick={() => setOpen(!open)}
+                  className="text-2xl"
+                  aria-label="Abrir menu"
+                >
                   ☰
                 </button>
 
-                <h1 className="absolute left-1/2 transform -translate-x-1/2 text-3xl font-bold">
+                <h1 className="absolute left-1/2 transform -translate-x-1/2 text-2xl md:text-3xl font-bold">
                   Empanadas Piolas
                 </h1>
 
-                <ReusableButton
-                  text="Login"
-                  openFunction={() => (window.location.href = "/login")}
-                  styles="bg-white text-orange-500 px-3 py-1 rounded"
-                />
+                <div className="flex items-center gap-3">
+                  {currentUser ? (
+                    <>
+                      <span className="hidden md:inline font-semibold">
+                        Hola, {currentUser.name}
+                      </span>
+                      <button
+                        type="button"
+                        onClick={() => scrollToSection("historial")}
+                        className="bg-white text-orange-500 px-3 py-1 rounded"
+                      >
+                        Historial
+                      </button>
+                      <button
+                        type="button"
+                        onClick={cerrarSesion}
+                        className="bg-orange-700 text-white px-3 py-1 rounded"
+                      >
+                        Salir
+                      </button>
+                    </>
+                  ) : (
+                    <Link
+                      to="/login"
+                      className="bg-white text-orange-500 px-3 py-1 rounded"
+                    >
+                      Login
+                    </Link>
+                  )}
+                </div>
               </nav>
 
-              {/* SIDEBAR */}
               {open && (
                 <div className="fixed top-0 left-0 h-full w-64 bg-white shadow-lg p-6 z-50">
                   <button
+                    type="button"
                     onClick={() => setOpen(false)}
                     className="absolute top-4 right-4 text-xl"
+                    aria-label="Cerrar menu"
                   >
-                    ✕
+                    ×
                   </button>
 
                   <p className="mb-4 font-bold">INDICE</p>
-                  <p className="mb-2 cursor-pointer" onClick={() => scrollToSection("nosotros")}>Nosotros</p>
-                  <p className="mb-2 cursor-pointer" onClick={() => scrollToSection("mapa")}>Locales</p>
-                  <p className="mb-2 cursor-pointer" onClick={() => scrollToSection("menu")}>
-                    Menú
-                  </p>
-                  <p className="mb-2 cursor-pointer" onClick={() => scrollToSection("pedido")}>Pedir</p>
-                  
-                  
+                  <button className="block mb-2" onClick={() => scrollToSection("nosotros")}>
+                    Nosotros
+                  </button>
+                  <button className="block mb-2" onClick={() => scrollToSection("mapa")}>
+                    Locales
+                  </button>
+                  <button className="block mb-2" onClick={() => scrollToSection("menu")}>
+                    Menu
+                  </button>
+                  <button className="block mb-2" onClick={() => scrollToSection("pedido")}>
+                    Pedir
+                  </button>
+                  <button className="block mb-2" onClick={() => scrollToSection("historial")}>
+                    Historial
+                  </button>
                 </div>
               )}
 
-              {/* NOSOTROS */}
-              <section id = "nosotros" className="p-10 bg-gray-100 flex flex-col md:flex-row gap-10 items-center">
-                <img src="/flia.jpg" className="w-full md:w-1/2 rounded" />
+              <section
+                id="nosotros"
+                className="p-10 bg-gray-100 flex flex-col md:flex-row gap-10 items-center"
+              >
+                <img
+                  src="/flia.jpg"
+                  alt="Familia preparando empanadas"
+                  className="w-full md:w-1/2 rounded"
+                />
 
                 <div>
-                  <h2 className="text-3xl font-bold mb-4">Quiénes somos</h2>
+                  <h2 className="text-3xl font-bold mb-4">Quienes somos</h2>
                   <p>
                     Somos un emprendimiento familiar que hace empanadas caseras
                     con ingredientes de calidad.
@@ -106,113 +285,56 @@ const App = () => {
                 </div>
               </section>
 
-              {/* MAPA */}
               <section id="mapa" className="p-10 text-center">
-                <h2 className="text-3xl font-bold mb-4">Dónde estamos</h2>
+                <h2 className="text-3xl font-bold mb-4">Donde estamos</h2>
 
                 <div className="w-full h-64 bg-gray-300 flex items-center justify-center">
                   <p>MAPA</p>
                 </div>
               </section>
 
-              {/* MENÚ */}
               <section id="menu" className="p-10 text-center">
-                <h2 className="text-3xl font-bold mb-6">Nuestro menú</h2>
+                <h2 className="text-3xl font-bold mb-6">Nuestro menu</h2>
 
                 <div className="flex flex-wrap justify-center gap-6">
-                  <div
-                    onClick={() => agregar("Carne")}
-                    className="bg-white shadow p-4 rounded cursor-pointer w-40"
-                  >
-                    <img
-                      src="/empanadasDeCarne.jfif"
-                      className="w-full h-32 object-cover rounded mb-2"
-                    />
-                    <h3 className="font-bold">Carne</h3>
-                    <h3 className="font-bold">$100000</h3>
-                  </div>
-
-                  <div
-                    onClick={() => agregar("Pollo")}
-                    className="bg-white shadow p-4 rounded cursor-pointer w-40"
-                  >
-                    <img
-                      src="/empanadasDePollo.jfif"
-                      className="w-full h-32 object-cover rounded mb-2"
-                    />
-                    <h3 className="font-bold">Pollo</h3>
-                    <h3 className="font-bold">$100000</h3>
-                  </div>
-
-                  <div
-                    onClick={() => agregar("Jamón y queso")}
-                    className="bg-white shadow p-4 rounded cursor-pointer w-40"
-                  >
-                    <img
-                      src="/empanadasDeJYQ.jfif"
-                      className="w-full h-32 object-cover rounded mb-2"
-                    />
-                    <h3 className="font-bold">Jamón y queso</h3>
-                    <h3 className="font-bold">$100000</h3>
-                  </div>
-
-                  <div
-                    onClick={() => agregar("Humita")}
-                    className="bg-white shadow p-4 rounded cursor-pointer w-40"
-                  >
-                    <img
-                      src="/empanadasDeHumita.jfif"
-                      className="w-full h-32 object-cover rounded mb-2"
-                    />
-                    <h3 className="font-bold">Humita</h3>
-                    <h3 className="font-bold">$100000</h3>
-                  </div>
-
-                  <div
-                    onClick={() => agregar("4 Quesos")}
-                    className="bg-white shadow p-4 rounded cursor-pointer w-40"
-                  >
-                    <img
-                      src="/empanadas4Quesos.jfif"
-                      className="w-full h-32 object-cover rounded mb-2"
-                    />
-                    <h3 className="font-bold">4 Quesos</h3>
-                    <h3 className="font-bold">$100000</h3>
-                  </div>
-
-                  <div
-                    onClick={() => agregar("Caprese")}
-                    className="bg-white shadow p-4 rounded cursor-pointer w-40"
-                  >
-                    <img
-                      src="/empanadasDeCaprese.jfif"
-                      className="w-full h-32 object-cover rounded mb-2"
-                    />
-                    <h3 className="font-bold">Caprese</h3>
-                    <h3 className="font-bold">$100000</h3>
-                  </div>
+                  {menu.map((item) => (
+                    <button
+                      key={item.nombre}
+                      type="button"
+                      onClick={() => agregar(item.nombre)}
+                      className="bg-white shadow p-4 rounded cursor-pointer w-40 text-left"
+                    >
+                      <img
+                        src={item.imagen}
+                        alt={item.nombre}
+                        className="w-full h-32 object-cover rounded mb-2"
+                      />
+                      <h3 className="font-bold">{item.nombre}</h3>
+                      <p className="font-bold">${item.precio}</p>
+                    </button>
+                  ))}
                 </div>
               </section>
 
-              {/* PEDIDO NUEVO */}
               <section id="pedido" className="p-10 bg-gray-50">
                 <h2 className="text-2xl font-bold mb-6 text-center">
                   Tu pedido
                 </h2>
 
                 {pedido.length === 0 ? (
-                  <p className="text-center">No agregaste nada todavía</p>
+                  <p className="text-center">No agregaste nada todavia</p>
                 ) : (
                   <div className="max-w-md mx-auto flex flex-col gap-4">
-                    {pedido.map((item, index) => (
+                    {pedido.map((item) => (
                       <div
-                        key={index}
+                        key={item.nombre}
                         className="flex justify-between items-center bg-white p-4 rounded shadow"
                       >
                         <p className="font-semibold">{item.nombre}</p>
 
                         <div className="flex items-center gap-3">
                           <button
+                            type="button"
                             onClick={() => restar(item.nombre)}
                             className="bg-gray-200 px-3 py-1 rounded"
                           >
@@ -222,6 +344,7 @@ const App = () => {
                           <span>{item.cantidad}</span>
 
                           <button
+                            type="button"
                             onClick={() => agregar(item.nombre)}
                             className="bg-orange-500 text-white px-3 py-1 rounded"
                           >
@@ -234,21 +357,18 @@ const App = () => {
                 )}
               </section>
 
-              {/* FORM */}
               <section className="p-10 bg-gray-100">
                 <h2 className="text-3xl font-bold mb-6 text-center">
                   Hacer pedido
                 </h2>
 
                 <div className="max-w-md mx-auto flex flex-col gap-8">
-
-                  {/* MÉTODO DE PAGO */}
                   <div>
-                    <p className="font-bold mb-3">Método de pago</p>
+                    <p className="font-bold mb-3">Metodo de pago</p>
 
                     <div className="flex gap-4">
-
                       <button
+                        type="button"
                         onClick={() => setPago("Efectivo")}
                         className={`flex-1 p-3 rounded transition ${
                           pago === "Efectivo"
@@ -256,10 +376,11 @@ const App = () => {
                             : "bg-white border"
                         }`}
                       >
-                       Efectivo
+                        Efectivo
                       </button>
 
                       <button
+                        type="button"
                         onClick={() => setPago("Mercado Pago")}
                         className={`flex-1 p-3 rounded transition ${
                           pago === "Mercado Pago"
@@ -267,19 +388,17 @@ const App = () => {
                             : "bg-white border"
                         }`}
                       >
-                       Mercado Pago
+                        Mercado Pago
                       </button>
-
                     </div>
                   </div>
 
-                  {/* ENVÍO */}
                   <div>
                     <p className="font-bold mb-3">Tipo de entrega</p>
 
                     <div className="flex gap-4">
-
                       <button
+                        type="button"
                         onClick={() => setEnvio("Retiro")}
                         className={`flex-1 p-3 rounded transition ${
                           envio === "Retiro"
@@ -287,10 +406,11 @@ const App = () => {
                             : "bg-white border"
                         }`}
                       >
-                       Retiro en local
+                        Retiro en local
                       </button>
 
                       <button
+                        type="button"
                         onClick={() => setEnvio("Delivery")}
                         className={`flex-1 p-3 rounded transition ${
                           envio === "Delivery"
@@ -298,30 +418,80 @@ const App = () => {
                             : "bg-white border"
                         }`}
                       >
-                       Delivery
+                        Delivery
                       </button>
-
                     </div>
                   </div>
 
-                  {/* BOTÓN FINAL */}
-                  <ReusableButton
-                    text="Enviar pedido"
-                    openFunction={() => {
-                      console.log("Pedido:", pedido);
-                      console.log("Pago:", pago);
-                      console.log("Envío:", envio);
-                    }}
-                    styles="bg-orange-500 text-white p-3 rounded"
-                  />
+                  {mensaje && (
+                    <p className="rounded bg-white p-3 text-center text-sm shadow">
+                      {mensaje}
+                    </p>
+                  )}
 
+                  <ReusableButton
+                    text={isSavingPedido ? "Guardando..." : "Enviar pedido"}
+                    openFunction={() => void enviarPedido()}
+                    styles="bg-orange-500 text-white p-3 rounded disabled:opacity-60"
+                  />
                 </div>
+              </section>
+
+              <section id="historial" className="p-10 bg-white">
+                <h2 className="text-3xl font-bold mb-6 text-center">
+                  Historial de pedidos
+                </h2>
+
+                {!currentUser ? (
+                  <p className="text-center">
+                    Inicia sesion para ver tus pedidos guardados.
+                  </p>
+                ) : historial.length === 0 ? (
+                  <p className="text-center">Todavia no tenes pedidos guardados.</p>
+                ) : (
+                  <div className="max-w-2xl mx-auto flex flex-col gap-4">
+                    {historial.map((item, index) => (
+                      <article key={item.id} className="border rounded p-4 shadow-sm">
+                        <div className="flex flex-col gap-1 md:flex-row md:items-center md:justify-between">
+                          <h3 className="font-bold">
+                            Pedido #{historial.length - index}
+                          </h3>
+                          <p className="text-sm text-gray-500">
+                            {formatDate(getPedidoInfo(item).createdAt)}
+                          </p>
+                        </div>
+
+                        <ul className="mt-3">
+                          {getPedidoItems(item).map((empanada) => (
+                            <li key={empanada.nombre} className="flex justify-between">
+                              <span>{empanada.nombre}</span>
+                              <span>x{empanada.cantidad}</span>
+                            </li>
+                          ))}
+                        </ul>
+
+                        <div className="mt-3 flex flex-wrap gap-2 text-sm">
+                          {getPedidoInfo(item).pago && (
+                            <span className="rounded bg-orange-100 px-2 py-1">
+                              Pago: {getPedidoInfo(item).pago}
+                            </span>
+                          )}
+                          {getPedidoInfo(item).envio && (
+                            <span className="rounded bg-green-100 px-2 py-1">
+                              Entrega: {getPedidoInfo(item).envio}
+                            </span>
+                          )}
+                        </div>
+                      </article>
+                    ))}
+                  </div>
+                )}
               </section>
             </div>
           }
         />
 
-        <Route path="/login" element={<Login />} />
+        <Route path="/login" element={<Login onLogin={handleLogin} />} />
       </Routes>
     </BrowserRouter>
   );

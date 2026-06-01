@@ -1,6 +1,6 @@
 import { supabase } from "../../supabase.js";
 
-const ORDER_SELECT = "id,user_id,empanadas,users(id,nombre,apellido)";
+const ORDER_SELECT = "id,user_id,empanadas,users(id,name)";
 
 export async function getOrders() {
   const { data, error } = await supabase
