@@ -13,3 +13,5 @@ En back {
 npm i supabase --save-dev
 }
 }
+
+y bueno haces npm run dev en la carpeta front y deberia andar.
