@@ -15,3 +15,11 @@ npm i supabase --save-dev
 }
 
 y bueno haces npm run dev en la carpeta front y deberia andar.
+
+EDIT: DEV OPS
+
+Tareas de cada integrante:
+
+Olivia Naiderman: Hacer el workflow (Dejar un historial de las cosas que se van haciendo)
+
+Joaquín Margules: Hacer los test (Dejar un historial de las cosas que se van haciendo)
