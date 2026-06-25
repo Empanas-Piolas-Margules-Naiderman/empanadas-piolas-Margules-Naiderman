@@ -26,7 +26,7 @@ Joaquín Margules: Hacer los tests (Dejar un historial de las cosas que se van h
 Instalamos estas dependencias para el TP:
 
 - npm install -D jest @jest/globals
-- npm install -D playwright
+- npm install -D @playwright/test
 - npx playwright install
 
 Instalamos las dependencias necesarias para que los test puedan correr correctamente:

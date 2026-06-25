@@ -11,7 +11,7 @@
   },
   "devDependencies": {
     "@jest/globals": "^30.4.1",
-    "jest": "^30.4.2",
-    "playwright": "^1.61.1"
+    "@playwright/test": "^1.61.1",
+    "jest": "^30.4.2"
   }
 }
