@@ -1,1 +1,1 @@
-import { test } from "playwright";
+import { test, expect } from "@playwright/test";

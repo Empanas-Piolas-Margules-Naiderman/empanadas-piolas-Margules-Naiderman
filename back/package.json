@@ -6,7 +6,7 @@
     "@supabase/supabase-js": "^2.105.4"
   },
   "scripts": {
-    "test": "node --experimental-vm-modules ./node_modules/jest/bin/jest.js",
+    "test": "node --experimental-vm-modules node_modules/jest/bin/jest.js",
     "e2etest": "playwright test"
   },
   "devDependencies": {

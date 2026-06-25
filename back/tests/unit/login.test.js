@@ -1,17 +1,25 @@
-import { loginUser } from "../../src/services/authService.js";
-import { describe, jest, test } from "@jest/globals";
-import { supabase } from "../../supabase.js";
+import { jest, test, expect } from "@jest/globals";
 
-jest.mock("../../supabase.js", () => ({
+jest.unstable_mockModule("../../supabase.js", () => ({
   supabase: {
     from: jest.fn(),
   },
 }));
 
+const { loginUser } = await import("../../src/services/authService.js");
+
+const { supabase } = await import("../../supabase.js");
+
 test("Login values match", async () => {
+  const fakeUser = {
+    id: 8,
+    name: "Abraham",
+    password: "1234",
+  };
+
   const maybeSingle = jest.fn().mockResolvedValue({
-    data: null,
-    error: new Error("DB error"),
+    data: fakeUser,
+    error: null,
   });
 
   const eqPass = jest.fn().mockReturnValue({
@@ -30,10 +38,10 @@ test("Login values match", async () => {
     select,
   });
 
-  await expect(
-    loginUser({
-      name: "Abraham",
-      password: "123412341234",
-    }),
-  ).rejects.toThrow("DB Error");
+  const result = await loginUser({
+    name: "Abraham",
+    password: "1234",
+  });
+
+  expect(result).toEqual(fakeUser);
 });
