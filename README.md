@@ -15,7 +15,7 @@ En back:
 
 y bueno haces npm run dev en la carpeta front y deberia andar.
 
-EDIT: DEV OPS
+EDIT: DEV OPS (Aca empieza CALIDAD.md)
 
 Tareas de cada integrante:
 
@@ -29,13 +29,20 @@ Instalamos estas dependencias para el TP:
 - npm install -D @playwright/test
 - npx playwright install
 
+Para correr los tests:
+
+- Unit: npm run test
+- E2E: npm run e2etest
+
+todo adentro de \back
+
 Instalamos las dependencias necesarias para que los test puedan correr correctamente:
 
 - Jest para el "backend" porque trae mocks ya hechos para supabase, osea configuraciones para que funcionen los test de supabase y así se ahorran recursos.
 
 - playwright para el E2E porque lo vi en muchas fuentes que funciona bien con nuestra arquitectura.
 
-Test a evaluar:
+Tests a evaluar:
 
 Unit test:
 
@@ -86,4 +93,26 @@ Historial:
 
 E2E test:
 
-- Probar el flujo desde login hasta crear un pedido.
+Flujo entero de el test:
+
+1. Por la configuracion (playwright.config.js) la base de la URL es en localhost:5173, basicamente el test spawnea ahi.
+2. Busca "/" y verifica que exista
+3. Busca el botón (link) que te lleva a la página de "/login", le hace click y verifica que "/login" exista
+4. En los inputs llena el nombre con "Codis" y en la contraseña con "codis123" y toca el botón de iniciar sesión.
+5. Como el boton de iniciar sesión te lleva directo a "/" vuelve a verificar que "/" exista.
+6. Busca el boton que dice carne y le hace click sobre ella.
+7. Busca la seccion de pedido y se lo asigna a una variable.
+8. Verifica que en la seccion de pedido el componente que dice carne sea visible
+9. Busca el botón + (por area-label) y le hace click
+10. Busca el botón que tiene nombre Efectivo y le hace click
+11. Busca el botón que tiene nombre Retiro en el local
+12. Busca el botón que se llama Enviar pedido
+13. verifica que haya aparecido en la pagina un componente que se llame "Pedido guardado correctamente"
+14. Busca la sección historial, lo asigna a una variable, despues busca el primer articulo que aparezca y tambien lo asigna a una variable.
+15. En el ultimo pedido verifica que exista un componente que diga carne, verifica que el x2 sea visible (porque pidió una empanada y le agrego otra del mismo gusto), verfica que exista un texto que diga Pago: Efectivo y verifica que exista un texto que diga Entrega: Retiro.
+
+Historial:
+
+- Primero instalamos playwright mal y nos dimos cuenta de que nos habiamos confundido de nombre asi que instalamos playwright/test.
+- No entendia nada de playwright asi que le pedi a chatGPT que vayamos haciendo el test linea por linea bien explicado todo.
+- Para poder hacer bien algunas partes del testeo tuvimos que agregar algunos area-label a algunos botones.
