@@ -69,7 +69,9 @@ const App = () => {
   const [open, setOpen] = useState(false);
   const [pedido, setPedido] = useState<PedidoItem[]>([]);
   const [historial, setHistorial] = useState<Pedido[]>([]);
-  const [currentUser, setCurrentUser] = useState<User | null>(() => getStoredUser());
+  const [currentUser, setCurrentUser] = useState<User | null>(() =>
+    getStoredUser(),
+  );
   const [pago, setPago] = useState("");
   const [envio, setEnvio] = useState("");
   const [mensaje, setMensaje] = useState("");
@@ -89,7 +91,9 @@ const App = () => {
         setHistorial(pedidos);
       } catch (error) {
         setMensaje(
-          error instanceof Error ? error.message : "No se pudo cargar el historial",
+          error instanceof Error
+            ? error.message
+            : "No se pudo cargar el historial",
         );
       }
     }
@@ -177,7 +181,9 @@ const App = () => {
       setMensaje("Pedido guardado correctamente");
       scrollToSection("historial");
     } catch (error) {
-      setMensaje(error instanceof Error ? error.message : "No se pudo guardar el pedido");
+      setMensaje(
+        error instanceof Error ? error.message : "No se pudo guardar el pedido",
+      );
     } finally {
       setIsSavingPedido(false);
     }
@@ -248,19 +254,34 @@ const App = () => {
                   </button>
 
                   <p className="mb-4 font-bold">INDICE</p>
-                  <button className="block mb-2" onClick={() => scrollToSection("nosotros")}>
+                  <button
+                    className="block mb-2"
+                    onClick={() => scrollToSection("nosotros")}
+                  >
                     Nosotros
                   </button>
-                  <button className="block mb-2" onClick={() => scrollToSection("mapa")}>
+                  <button
+                    className="block mb-2"
+                    onClick={() => scrollToSection("mapa")}
+                  >
                     Locales
                   </button>
-                  <button className="block mb-2" onClick={() => scrollToSection("menu")}>
+                  <button
+                    className="block mb-2"
+                    onClick={() => scrollToSection("menu")}
+                  >
                     Menu
                   </button>
-                  <button className="block mb-2" onClick={() => scrollToSection("pedido")}>
+                  <button
+                    className="block mb-2"
+                    onClick={() => scrollToSection("pedido")}
+                  >
                     Pedir
                   </button>
-                  <button className="block mb-2" onClick={() => scrollToSection("historial")}>
+                  <button
+                    className="block mb-2"
+                    onClick={() => scrollToSection("historial")}
+                  >
                     Historial
                   </button>
                 </div>
@@ -336,6 +357,7 @@ const App = () => {
                           <button
                             type="button"
                             onClick={() => restar(item.nombre)}
+                            aria-label={`Restar ${item.nombre}`}
                             className="bg-gray-200 px-3 py-1 rounded"
                           >
                             -
@@ -346,6 +368,7 @@ const App = () => {
                           <button
                             type="button"
                             onClick={() => agregar(item.nombre)}
+                            aria-label={`Agregar ${item.nombre}`}
                             className="bg-orange-500 text-white px-3 py-1 rounded"
                           >
                             +
@@ -447,11 +470,16 @@ const App = () => {
                     Inicia sesion para ver tus pedidos guardados.
                   </p>
                 ) : historial.length === 0 ? (
-                  <p className="text-center">Todavia no tenes pedidos guardados.</p>
+                  <p className="text-center">
+                    Todavia no tenes pedidos guardados.
+                  </p>
                 ) : (
                   <div className="max-w-2xl mx-auto flex flex-col gap-4">
                     {historial.map((item, index) => (
-                      <article key={item.id} className="border rounded p-4 shadow-sm">
+                      <article
+                        key={item.id}
+                        className="border rounded p-4 shadow-sm"
+                      >
                         <div className="flex flex-col gap-1 md:flex-row md:items-center md:justify-between">
                           <h3 className="font-bold">
                             Pedido #{historial.length - index}
@@ -463,7 +491,10 @@ const App = () => {
 
                         <ul className="mt-3">
                           {getPedidoItems(item).map((empanada) => (
-                            <li key={empanada.nombre} className="flex justify-between">
+                            <li
+                              key={empanada.nombre}
+                              className="flex justify-between"
+                            >
                               <span>{empanada.nombre}</span>
                               <span>x{empanada.cantidad}</span>
                             </li>
