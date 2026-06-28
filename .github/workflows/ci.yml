@@ -46,7 +46,7 @@ jobs:
 
       - name: arrancar el Frontend
         working-directory: front
-        run: run: npm run dev -- --host 0.0.0.0 &
+        run: npm run dev -- --host 0.0.0.0 &
 
       - name: esperar al frontend
         run: sleep 10
