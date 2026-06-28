@@ -134,3 +134,15 @@ arme el job (arma una computadora virtual en ubuntu y corre todo para chequearlo
 5. Ejecutar tests
 6. Ejecutar build
 7. Deploy
+
+
+✔ Checkout
+✔ Setup Node
+✔ Install Front
+✔ Lint
+✔ Install Back
+✔ Unit Tests
+✔ Install Playwright
+✔ Start Frontend
+✔ E2E Tests
+✔ Build

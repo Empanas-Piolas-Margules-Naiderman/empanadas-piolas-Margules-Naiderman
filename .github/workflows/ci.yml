@@ -55,6 +55,20 @@ jobs:
             sleep 2
           done
 
+      - name: Ver archivos del front
+        working-directory: front
+        run: ls -la
+
+      - name: Ver si existe .env
+        working-directory: front
+        run: |
+          if [ -f .env ]; then
+            echo "Existe .env"
+          else
+            echo "NO existe .env"
+          fi
+
+
       - name: correr E2E Tests
         working-directory: back
         run: npm run e2etest
