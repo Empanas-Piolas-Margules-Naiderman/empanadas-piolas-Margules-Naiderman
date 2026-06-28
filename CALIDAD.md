@@ -1,4 +1,8 @@
-Link a la web desplegada: empanadaspiolasmn.netlify.app
+Token vercel: vcp_2SmbEem9gwdlewmkhhYq4mC33p2G2tJKQiRBsNxyAJBPVrRZL72ujvCY
+Orgid:"orgId":"team_AaX3HKRK8idlknQBo5T0zZhF"
+Projectid:"projectId":"prj_6Q5MqQA2vPICVBruwNsRwp58EeNb"
+
+Link a la web desplegada: https://empanadas-piolas-margules-naiderman-k3pzpr9ao.vercel.app/
 
 Hecho por Joaquín Margules y Olivia Naiderman
 
