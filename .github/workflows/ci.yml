@@ -48,8 +48,12 @@ jobs:
         working-directory: front
         run: npm run dev -- --host 0.0.0.0 &
 
-      - name: esperar al frontend
-        run: sleep 10
+      - name: Esperar a que el frontend esté listo
+        run: |
+          until curl -s http://localhost:5173 > /dev/null; do
+            echo "Esperando frontend..."
+            sleep 2
+          done
 
       - name: correr E2E Tests
         working-directory: back
