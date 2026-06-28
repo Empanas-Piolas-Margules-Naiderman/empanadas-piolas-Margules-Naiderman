@@ -4,5 +4,14 @@
   "type": "module",
   "dependencies": {
     "@supabase/supabase-js": "^2.105.4"
+  },
+  "scripts": {
+    "test": "node --experimental-vm-modules node_modules/jest/bin/jest.js",
+    "e2etest": "playwright test"
+  },
+  "devDependencies": {
+    "@jest/globals": "^30.4.1",
+    "@playwright/test": "^1.61.1",
+    "jest": "^30.4.2"
   }
 }

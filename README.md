@@ -2,29 +2,25 @@ Link a la web desplegada: empanadaspiolasmn.netlify.app
 
 Hecho por Joaquín Margules y Olivia Naiderman
 
-Para iniciarlo en el localhost hay que instalar{
-En front {
-npm i
-npm i react-router-dom
-npm i tailwindcss @tailwindcss/vite
-}
+Para iniciarlo en el localhost hay que instalar
+En front:
 
-En back {
-npm i supabase --save-dev
-}
-}
+- npm i
+- npm i react-router-dom
+- npm i tailwindcss @tailwindcss/vite
+
+En back:
+
+- npm i supabase --save-dev
 
 y bueno haces npm run dev en la carpeta front y deberia andar.
 
-EDIT: DEV OPS
+EDIT: DEV OPS (Aca empieza CALIDAD.md)
 
 Tareas de cada integrante:
 
 Olivia Naiderman: Hacer el workflow (Dejar un historial de las cosas que se van haciendo)
 
-<<<<<<< Updated upstream
-Joaquín Margules: Hacer los test (Dejar un historial de las cosas que se van haciendo)
-=======
 finalmente logre instalar toda esta mierda
 cree la carpeta github y el archivo ci.yml
 cree los on (que dice cuand se activa el workflow) --> cuando se pushea y se pullea en las branches develop y main respectivamente
@@ -144,4 +140,32 @@ Historial:
 - Primero instalamos playwright mal y nos dimos cuenta de que nos habiamos confundido de nombre asi que instalamos playwright/test.
 - No entendia nada de playwright asi que le pedi a chatGPT que vayamos haciendo el test linea por linea bien explicado todo.
 - Para poder hacer bien algunas partes del testeo tuvimos que agregar algunos area-label a algunos botones.
->>>>>>> Stashed changes
+  <<<<<<< HEAD
+  > > > > > > > # Stashed changes
+
+oli:
+finalmente logre instalar toda esta mierda
+cree la carpeta github y el archivo ci.yml
+cree los on (que dice cuand se activa el workflow) --> cuando se pushea y se pullea en las branches develop y main respectivamente
+arme el job (arma una computadora virtual en ubuntu y corre todo para chequearlo) y todos los pasos que tiene que hacer para chequear que un push o un pull salen bien.
+para que pueda leer el .env (como esta en el gitinore porque tiene muchas veces variables de configuracion o credenciales) puse las variables en git secrets
+
+Push
+│
+▼
+GitHub Actions
+│
+├── Descarga el repositorio
+├── Instala Node.js
+├── Instala dependencias del Front
+├── Crea el .env usando GitHub Secrets
+├── Ejecuta el Lint
+├── Instala dependencias del Back
+├── Ejecuta Tests Unitarios
+├── Instala Playwright
+├── Levanta el Frontend
+├── Espera a que esté disponible
+├── Ejecuta Tests E2E
+└── Genera el Build
+
+> > > > > > > 0bbc8697d9fd5201b7cfc1f612976e40c5a1c24d

@@ -1,0 +1,83 @@
+name: Workflow TP3
+
+on:
+  push:
+    branches:
+      - In-dev-TP3
+      - main
+
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  quality:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Descargar repositorio
+        uses: actions/checkout@v4
+
+      - name: Instalar Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Instalar dependencias de front
+        working-directory: front
+        run: npm ci
+
+      - name: Crear archivo .env
+        working-directory: front
+        run: |
+          echo "VITE_SUPABASE_URL=${{ secrets.VITE_SUPABASE_URL }}" > .env
+          echo "VITE_SUPABASE_PUBLISHABLE_KEY=${{ secrets.VITE_SUPABASE_PUBLISHABLE_KEY }}" >> .env
+
+      - name: Corre Lint
+        working-directory: front
+        run: npm run lint
+
+      - name: Instalar dependencias de back
+        working-directory: back
+        run: npm ci
+
+      - name: Correr Tests
+        working-directory: back
+        run: npm test
+
+      - name: Instalar Playwright 
+        working-directory: back
+        run: npx playwright install
+
+      - name: arrancar el Frontend
+        working-directory: front
+        run: npm run dev -- --host 0.0.0.0 &
+
+      - name: Esperar a que el frontend esté listo
+        run: |
+          until curl -s http://localhost:5173 > /dev/null; do
+            echo "Esperando frontend..."
+            sleep 2
+          done
+
+      - name: Ver archivos del front
+        working-directory: front
+        run: ls -la
+
+      - name: Ver si existe .env
+        working-directory: front
+        run: |
+          if [ -f .env ]; then
+            echo "Existe .env"
+          else
+            echo "NO existe .env"
+          fi
+
+
+      - name: correr E2E Tests
+        working-directory: back
+        run: npm run e2etest
+
+      - name: Build Front
+        working-directory: front
+        run: npm run build
