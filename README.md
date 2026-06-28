@@ -124,25 +124,24 @@ oli:
 finalmente logre instalar toda esta mierda 
 cree la carpeta github y el archivo ci.yml
 cree los on (que dice cuand se activa el workflow) --> cuando se pushea y se pullea en las branches develop y main respectivamente
-arme el job (arma una computadora virtual en ubuntu y corre todo para chequearlo)
+arme el job (arma una computadora virtual en ubuntu y corre todo para chequearlo) y todos los pasos que tiene que hacer para chequear que un push o un pull salen bien. 
+para que pueda leer el .env (como esta en el gitinore porque tiene muchas veces variables de configuracion o credenciales) puse las variables en git secrets 
 
 
-1. Descargar el proyecto
-2. Instalar Node
-3. Instalar dependencias
-4. Ejecutar lint
-5. Ejecutar tests
-6. Ejecutar build
-7. Deploy
-
-
-✔ Checkout
-✔ Setup Node
-✔ Install Front
-✔ Lint
-✔ Install Back
-✔ Unit Tests
-✔ Install Playwright
-✔ Start Frontend
-✔ E2E Tests
-✔ Build
+Push
+ │
+ ▼
+GitHub Actions
+ │
+ ├── Descarga el repositorio
+ ├── Instala Node.js
+ ├── Instala dependencias del Front
+ ├── Crea el .env usando GitHub Secrets
+ ├── Ejecuta el Lint
+ ├── Instala dependencias del Back
+ ├── Ejecuta Tests Unitarios
+ ├── Instala Playwright
+ ├── Levanta el Frontend
+ ├── Espera a que esté disponible
+ ├── Ejecuta Tests E2E
+ └── Genera el Build
