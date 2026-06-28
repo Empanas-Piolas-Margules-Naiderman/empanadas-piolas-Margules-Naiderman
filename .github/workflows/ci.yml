@@ -28,6 +28,12 @@ jobs:
         working-directory: front
         run: npm ci
 
+      - name: Crear archivo .env
+        working-directory: front
+        run: |
+          echo "VITE_SUPABASE_URL=${{ secrets.VITE_SUPABASE_URL }}" > .env
+          echo "VITE_SUPABASE_PUBLISHABLE_KEY=${{ secrets.VITE_SUPABASE_PUBLISHABLE_KEY }}" >> .env
+
       - name: Corre Lint
         working-directory: front
         run: npm run lint
