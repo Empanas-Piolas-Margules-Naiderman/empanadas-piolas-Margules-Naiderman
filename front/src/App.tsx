@@ -300,8 +300,19 @@ const App = () => {
                 <div>
                   <h2 className="text-3xl font-bold mb-4">Quienes somos</h2>
                   <p>
-                    Somos un emprendimiento familiar que hace empanadas caseras
-                    con ingredientes de calidad.
+                    En **Empanadas Piolas** creemos que una buena empanada puede
+                    mejorar cualquier día. Nacimos con una idea simple: preparar
+                    empanadas abundantes, sabrosas y hechas con ingredientes de
+                    calidad, para que cada bocado se sienta como casero. Nos
+                    gusta innovar sin perder las recetas de siempre, ofreciendo
+                    desde los sabores clásicos que nunca fallan hasta
+                    combinaciones originales para los más curiosos. Ya sea para
+                    compartir con amigos, disfrutar en familia o darte un gusto
+                    después de un día largo, siempre hay una empanada piola
+                    esperándote. Porque para nosotros no se trata solo de
+                    comer... se trata de disfrutar un buen momento. ¡Bienvenido
+                    a Empanadas Piolas, donde el sabor es cosa seria, pero la
+                    buena onda nunca falta!
                   </p>
                 </div>
               </section>
@@ -310,7 +321,7 @@ const App = () => {
                 <h2 className="text-3xl font-bold mb-4">Donde estamos</h2>
 
                 <div className="w-full h-64 bg-gray-300 flex items-center justify-center">
-                  <p>MAPA</p>
+                  <p>NO ESTAMOS</p>
                 </div>
               </section>
 
