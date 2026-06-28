@@ -40,6 +40,21 @@ jobs:
         working-directory: back
         run: npm test
 
+      - name: Instalar Playwright 
+        working-directory: back
+        run: npx playwright install
+
+      - name: arrancar el Frontend
+        working-directory: front
+        run: run: npm run dev -- --host 0.0.0.0 &
+
+      - name: esperar al frontend
+        run: sleep 10
+
+      - name: correr E2E Tests
+        working-directory: back
+        run: npm run e2etest
+
       - name: Build Front
         working-directory: front
         run: npm run build
