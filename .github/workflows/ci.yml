@@ -1,0 +1,44 @@
+name: Workflow TP3
+
+on:
+  push:
+    branches:
+      - In-dev-TP3
+      - main
+
+  pull_request:
+    branches:
+      - In-dev-TP3
+      - main
+
+
+jobs:
+  quality:
+    runs-on: ubuntu-latest
+    steps:
+      - name: descargar repositorio
+      uses: actions/checkout@v4
+      
+      - name: intalar Node.js
+      uses: actions/setup-node@v4
+      with: node-version: 22
+
+      - name: Instalar dependencias de front
+      working-directory: front
+      run: npm ci
+
+      - name: corre Lint
+      working-directory: front
+      run: npm run lint
+
+      - name: Instalar dependencias de back
+      working-directory: back
+      run: npm ci
+
+      - name: correr Tests
+      working-directory: back
+      run: npm test
+      
+      - name: Build Front
+      working-directory: front
+      run: npm run build
